@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" id="favicon" type="image/png" href="favicon.png">
+
+
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #favicon {
+            border-radius: 50%;
+            display: inline-block;
+            object-fit: cover;
+
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            cursor: default;
+        }
+
+        .glass-effect {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+
+        .logo-circle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            cursor: default;
+        }
+
+        .goal-card {
+            transition: all 0.3s ease;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .goal-item {
+            transition: all 0.2s ease;
+        }
+
+        .goal-item:hover {
+            background: rgba(55, 65, 81, 0.5);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: rgb(139, 92, 246);
+        }
+
+        /* ===== Custom Webkit Scrollbar ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #16213e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 10px;
+            border: 2px solid #16213e;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+
+        /* Responsive Media */
+        @media (max-width: 640px) {
+            .logo-circle {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-circle span {
+                font-size: 1.25rem;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .glass-effect {
+                padding: 1.5rem;
+            }
+
+            .goal-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .container-custom {
+                padding: 2rem;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .container-custom {
+                max-width: 1280px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .glass-effect {
+                background: white;
+                border: 1px solid #ddd;
+            }
+
+            .goal-card {
+                page-break-inside: avoid;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <!-- Navigation Bar -->
+    <nav class="glass-effect sticky top-0 z-50 shadow-2xl no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo & Brand -->
+                <div class="flex items-center space-x-4">
+                    <div class="logo-circle w-12 h-12 rounded-xl flex items-center justify-center">
+                        <span class="text-2xl">🎯</span>
+                    </div>
+                    <div>
+                        <h1 class="text-white text-2xl font-bold tracking-tight">GoalTracker</h1>
+                        <p class="text-gray-400 text-xs hidden sm:block">Achieve Your Dreams</p>
+                    </div>
+                </div>
+                <!-- Export Buttons -->
+                <div class="flex items-center gap-2">
+
+                    <!-- TXT -->
+                    <button onclick="exportToTXT()" class="btn-primary
+               flex items-center justify-center gap-1 sm:gap-2
+               px-3 sm:px-4
+               py-2
+               text-xs sm:text-sm
+               rounded-lg
+               text-white font-medium
+               transition-all duration-300" title="Export as TXT">
+                        📝
+                        <span class="hidden sm:inline">TXT</span>
+                    </button>
+
+                    <!-- Word -->
+                    <button onclick="exportToWord()" class="btn-primary
+               flex items-center justify-center gap-1 sm:gap-2
+               px-3 sm:px-4
+               py-2 hidden sm:flex
+               text-xs sm:text-sm
+               rounded-lg
+               text-white font-medium
+               transition-all duration-300" title="Export as Word">
+                        📄
+                        <span class="hidden sm:inline">Word</span>
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8 container-custom">
+
+        <!-- Add Goal Form -->
+        <section class="max-w-2xl mx-auto mb-10 no-print">
+            <div class="glass-effect rounded-2xl shadow-2xl p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Create New Goal</h2>
+                    <p class="text-gray-400">Set your targets and track your progress</p>
+                </div>
+
+                <form onsubmit="addNewGoal(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">📂 Category</label>
+                        <input type="text" id="categoryField" placeholder="e.g., Work, Health, Learning, Finance"
+                            class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-purple-500 transition"
+                            required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">✍️ Goal Description</label>
+                        <input type="text" id="goalField" placeholder="What do you want to achieve?"
+                            class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-purple-500 transition"
+                            required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">🎨 Color Theme</label>
+                        <select id="colorField"
+                            class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-purple-500 transition">
+                            <option value="from-pink-500 to-rose-600">🌸 Pink Rose</option>
+                            <option value="from-blue-500 to-indigo-600">💙 Blue Indigo</option>
+                            <option value="from-green-500 to-emerald-600">💚 Green Emerald</option>
+                            <option value="from-purple-500 to-fuchsia-600">💜 Purple Fuchsia</option>
+                            <option value="from-yellow-500 to-orange-600">🧡 Yellow Orange</option>
+                            <option value="from-red-500 to-pink-600">❤️ Red Pink</option>
+                            <option value="from-cyan-500 to-blue-600">🩵 Cyan Blue</option>
+                            <option value="from-indigo-500 to-purple-600">🔮 Indigo Purple</option>
+                            <option value="from-amber-500 to-yellow-600">⭐ Amber Yellow</option>
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full btn-primary text-white py-4 rounded-lg font-semibold text-lg shadow-xl">
+                        ➕ Add Goal
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Goals Grid -->
+        <div id="goalsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+        <!-- Hidden PDF Content -->
+        <div id="pdfContent" style="display: none;">
+            <div style="padding: 40px; font-family: 'Poppins', sans-serif;">
+                <div
+                    style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #667eea; padding-bottom: 20px;">
+                    <h1 style="font-size: 36px; color: #1a1a2e; margin-bottom: 10px;">🎯 My Goals</h1>
+                    <p style="color: #666; font-size: 14px;">Generated on <span id="pdfDate"></span></p>
+                </div>
+                <div id="pdfGoals"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Export to TXT
+        function exportToTXT() {
+            if (allGoals.length === 0) {
+                alert('⚠️ No goals to export!');
+                return;
+            }
+
+            let content = '🎯 My Goals\n\n';
+
+            allGoals.forEach(cat => {
+                content += `📂 ${cat.category}\n`;
+                cat.goals.forEach((goal, i) => {
+                    content += `  ${i + 1}. ${goal}\n`;
+                });
+                content += '\n';
+            });
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'my-goals.txt';
+            link.click();
+        }
+
+        // Export to Word (.doc)
+        function exportToWord() {
+            if (allGoals.length === 0) {
+                alert('⚠️ No goals to export!');
+                return;
+            }
+
+            let content = `
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>My Goals</title>
+            </head>
+            <body style="font-family: Poppins, sans-serif;">
+                <h1>🎯 My Goals</h1>
+        `;
+
+            allGoals.forEach(cat => {
+                content += `<h2>📂 ${cat.category}</h2><ul>`;
+                cat.goals.forEach(goal => {
+                    content += `<li>${goal}</li>`;
+                });
+                content += `</ul>`;
+            });
+
+            content += `</body></html>`;
+
+            const blob = new Blob([content], {
+                type: 'application/msword'
+            });
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'my-goals.doc';
+            link.click();
+        }
+        // Initialize data
+        let allGoals = JSON.parse(localStorage.getItem('goalsData')) || [];
+        let rememberedCategory = localStorage.getItem('lastCategory') || '';
+        let rememberedColor = localStorage.getItem('lastColor') || 'from-pink-500 to-rose-600';
+
+        // Load remembered values on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const categoryField = document.getElementById('categoryField');
+            const colorField = document.getElementById('colorField');
+
+            if (rememberedCategory) {
+                categoryField.value = rememberedCategory;
+            }
+            colorField.value = rememberedColor;
+
+            displayGoals();
+        });
+
+        // Save to localStorage
+        function saveToStorage() {
+            localStorage.setItem('goalsData', JSON.stringify(allGoals));
+        }
+
+        // Add new goal
+        function addNewGoal(event) {
+            event.preventDefault();
+
+            const category = document.getElementById('categoryField').value.trim();
+            const goalText = document.getElementById('goalField').value.trim();
+            const color = document.getElementById('colorField').value;
+
+            if (!category || !goalText) {
+                alert('⚠️ Please fill in all fields');
+                return;
+            }
+
+            // Find or create category
+            let categoryObj = allGoals.find(cat => cat.category === category);
+
+            if (!categoryObj) {
+                categoryObj = {
+                    category: category,
+                    color: color,
+                    goals: []
+                };
+                allGoals.push(categoryObj);
+            }
+
+            // Add goal to category
+            categoryObj.goals.push(goalText);
+
+            // Remember category and color
+            localStorage.setItem('lastCategory', category);
+            localStorage.setItem('lastColor', color);
+            rememberedCategory = category;
+            rememberedColor = color;
+
+            // Clear only goal field
+            document.getElementById('goalField').value = '';
+
+            // Save and refresh
+            saveToStorage();
+            displayGoals();
+
+            // Show success feedback
+            showNotification('✅ Goal added successfully!');
+        }
+
+        // Display all goals
+        function displayGoals() {
+            const grid = document.getElementById('goalsGrid');
+
+            if (allGoals.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                        <div class="text-8xl mb-6 animate-bounce">🎯</div>
+                        <h3 class="text-3xl font-bold text-white mb-3">No Goals Yet</h3>
+                        <p class="text-gray-400 text-lg">Start creating your goals and watch your progress!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = allGoals.map((cat, categoryIndex) => `
+                <div class="goal-card glass-effect rounded-xl overflow-hidden shadow-xl">
+                    <!-- Category Header -->
+                    <div class="bg-gradient-to-r ${cat.color} p-5">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-white font-bold text-xl">${escapeHtml(cat.category)}</h3>
+                            <span class="bg-white/30 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                ${cat.goals.length}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Goals List -->
+                    <div class="p-4 space-y-2">
+                        ${cat.goals.map((goal, goalIndex) => `
+                            <div class="goal-item flex justify-between items-center p-3 rounded-lg group">
+                                <span class="text-gray-200 flex-1 mr-3">${escapeHtml(goal)}</span>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onclick="modifyGoal(${categoryIndex}, ${goalIndex})" 
+                                            class="hover:scale-125 transition-transform" 
+                                            title="Edit">
+                                        ✏️
+                                    </button>
+                                    <button onclick="removeGoal(${categoryIndex}, ${goalIndex})" 
+                                            class="hover:scale-125 transition-transform" 
+                                            title="Delete">
+                                        ❌
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Edit goal
+        function modifyGoal(categoryIndex, goalIndex) {
+            const currentGoal = allGoals[categoryIndex].goals[goalIndex];
+            const newGoal = prompt('✏️ Edit your goal:', currentGoal);
+
+            if (newGoal && newGoal.trim()) {
+                allGoals[categoryIndex].goals[goalIndex] = newGoal.trim();
+                saveToStorage();
+                displayGoals();
+                showNotification('✅ Goal updated!');
+            }
+        }
+
+        // Delete goal
+        function removeGoal(categoryIndex, goalIndex) {
+            if (confirm('🗑️ Are you sure you want to delete this goal?')) {
+                allGoals[categoryIndex].goals.splice(goalIndex, 1);
+
+                // Remove category if no goals left
+                if (allGoals[categoryIndex].goals.length === 0) {
+                    allGoals.splice(categoryIndex, 1);
+                }
+
+                saveToStorage();
+                displayGoals();
+                showNotification('🗑️ Goal deleted!');
+            }
+        }
+
+        // Color mapping for PDF
+        const colorMap = {
+            'from-pink-500 to-rose-600': '#ec4899',
+            'from-blue-500 to-indigo-600': '#3b82f6',
+            'from-green-500 to-emerald-600': '#10b981',
+            'from-purple-500 to-fuchsia-600': '#a855f7',
+            'from-yellow-500 to-orange-600': '#f59e0b',
+            'from-red-500 to-pink-600': '#ef4444',
+            'from-cyan-500 to-blue-600': '#06b6d4',
+            'from-teal-500 to-green-600': '#14b8a6',
+            'from-indigo-500 to-purple-600': '#6366f1',
+            'from-amber-500 to-yellow-600': '#f59e0b'
+        };
+
+        // Export to PDF
+        function exportToPDF() {
+            if (allGoals.length === 0) {
+                alert('⚠️ No goals to export! Please add some goals first.');
+                return;
+            }
+
+            // Set date
+            const today = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('pdfDate').textContent = today;
+
+
+            const pdfGoalsContainer = document.getElementById('pdfGoals');
+            pdfGoalsContainer.innerHTML = allGoals.map(cat => {
+                const color = colorMap[cat.color] || '#667eea';
+                return `
+                    <div style="margin-bottom: 40px; page-break-inside: avoid;">
+                        <!-- Category Title -->
+                        <div style="background: ${color}; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <h2 style="margin: 0; font-size: 26px; font-weight: bold; letter-spacing: 0.5px;">
+                                ${escapeHtml(cat.category)}
+                            </h2>
+                            <div style="margin-top: 10px; font-size: 14px; opacity: 0.9;">
+                                Total Goals: ${cat.goals.length}
+                            </div>
+                        </div>
+                        
+                        <!-- Goals with Checkboxes -->
+                        <div style="padding-left: 10px;">
+                            ${cat.goals.map((goal, index) => `
+                                <div style="margin-bottom: 25px; padding: 15px; background: #ffffff; border: 2px solid #e5e7eb; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                    <!-- Checkbox and Goal Title -->
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                        <div style="width: 20px; height: 20px; border: 2px solid ${color}; border-radius: 4px; margin-right: 12px; flex-shrink: 0; margin-top: 2px; background: white;"></div>
+                                        <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; line-height: 1.4;">
+                                            Goal ${index + 1}: ${escapeHtml(goal)}
+                                        </h3>
+                                    </div>
+                                    
+                                    <!-- Progress Paragraph Section -->
+                                    <div style="padding-left: 32px; margin-top: 12px;">
+                                        <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            Progress Notes:
+                                        </p>
+                                        <div style="border-left: 3px solid ${color}; padding-left: 12px; margin-bottom: 10px;">
+                                            <p style="margin: 0 0 10px 0; color: #4b5563; font-size: 14px; line-height: 1.8;">
+                                                _______________________________________________
+                                            </p>
+                                            <p style="margin: 0 0 10px 0; color: #4b5563; font-size: 14px; line-height: 1.8;">
+                                                _______________________________________________
+                                            </p>
+                                            <p style="margin: 0; color: #4b5563; font-size: 14px; line-height: 1.8;">
+                                                _______________________________________________
+                                            </p>
+                                        </div>
+                                        
+                                        <p style="margin: 15px 0 8px 0; font-size: 13px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            Action Steps:
+                                        </p>
+                                        <div style="border-left: 3px solid ${color}; padding-left: 12px;">
+                                            <p style="margin: 0 0 10px 0; color: #4b5563; font-size: 14px; line-height: 1.8;">
+                                                _______________________________________________
+                                            </p>
+                                            <p style="margin: 0 0 10px 0; color: #4b5563; font-size: 14px; line-height: 1.8;">
+                                                _______________________________________________
+                                            </p>
+                                            <p style="margin: 0; color: #4b5563; font-size: 14px; line-height: 1.8;">
+                                                _______________________________________________
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Generate PDF
+            const element = document.getElementById('pdfContent');
+            const opt = {
+                margin: [15, 15, 15, 15],
+                filename: `my-goals-tracker-${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            showNotification('📄 Generating PDF...');
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                showNotification('✅ PDF downloaded successfully!');
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-24 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-2xl z-50 animate-pulse';
+            notification.textContent = message;
+            notification.style.fontFamily = "'Poppins', sans-serif";
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => notification.remove(), 500);
+            }, 2000);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+</body>
+
+</html>
