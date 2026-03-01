@@ -60,8 +60,8 @@ Front-end logic implementation
 
 GoalTracker/
 │
-├── GoalTracker.html   # Main application file
-├── favicon.png        # Website icon
+├── index.html   # Main application file
+├── favicon.png  # Website icon
 └── README.md
 
 ```
