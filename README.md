@@ -1,10 +1,11 @@
 # 🎯 GoalTracker
 
-GoalTracker is a simple and intuitive web application designed to help users create, manage, and track their personal goals efficiently.
+GoalTracker is a modern, web-based application designed to help you set, manage, and track your personal and professional goals. It allows you to categorize your goals, customize colors for each category, and export your goals in multiple formats (TXT, Word, PDF) for easy sharing and backup.
 
 It allows users to organize their objectives, stay motivated, and monitor progress in a clean and minimal interface.
 
-🔗 Live Demo: https://goal-tracker-by-imane.vercel.app
+##🔗 Live Demo: 
+https://goal-tracker-by-imane.vercel.app
 
 ---
 
