@@ -50,9 +50,12 @@ Front-end logic implementation
 - HTML5
 - CSS3
 - JavaScript
+- LocalStorage
 
 ---
 ## 📁 Project Structure 
+
+```bash
 
 GoalTracker/
 │
@@ -60,7 +63,7 @@ GoalTracker/
 ├── favicon.png        # Website icon
 └── README.md
 
----
+```
 
 ## 👩‍💻 Author
 
